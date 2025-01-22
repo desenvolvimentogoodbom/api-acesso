@@ -12,4 +12,9 @@ export class AlertaController {
 	async adicionaralerta(@Body() dados: InsereAlertaDTO) {
 		return await this.ariuserpService.adicionaralerta(dados);
 	}
+
+	@Post('/executarfila')
+	async executarfila(dados: any) {
+		return await this.ariuserpService.executafila(dados);
+	}
 }
