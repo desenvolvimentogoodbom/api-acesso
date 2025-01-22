@@ -1,38 +1,39 @@
 import { Controller, Get, Post, Body, Headers, Query, HttpStatus, UseGuards } from '@nestjs/common';
 import { AcessoService } from './acesso.service';
-import { CadastraUsarioDTO } from './dto/cadastra-usuario';
-import { CadastraUsarioEmpresaDTO } from './dto/cadastra-usuario-empresa';
+import { CadastraUsarioAriusErpDTO } from './dto/cadastra-usuario-ariuserp';
 import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionarios';
 import { TokenGuard } from 'src/guards/token.guard';
 import { EstabelecimentoDTO } from './dto/estabelecimento';
 import { AcaoDTO } from './dto/acao';
+import { DesligamentoPendentesDTO } from '../vianuvem/dto/desligamento-pendente';
+import { CadastraUsarioEmpresaAriusErpDTO } from './dto/cadastra-usuario-empresa-ariuserp';
 
 @UseGuards(TokenGuard)
 @Controller('acesso')
 export class AcessoController {
 	constructor(private readonly ariuserpService: AcessoService) {}
 
-	@Post('cadastrarusuario')
-	async cadastraUsuario(@Body() dados: CadastraUsarioDTO[]) {
+	@Post('/ariuserp/cadastrarusuario')
+	async cadastraUsuario(@Body() dados: CadastraUsarioAriusErpDTO[]) {
 		return await this.ariuserpService.cadastraUsuario(dados);
 	}
 
-	@Post('cadastrarusuarioempresa')
-	async cadastraUsuarioEmpresa(@Body() dados: CadastraUsarioEmpresaDTO) {
+	@Post('/ariuserp/cadastrarusuarioempresa')
+	async cadastraUsuarioEmpresa(@Body() dados: CadastraUsarioEmpresaAriusErpDTO) {
 		return await this.ariuserpService.cadastraUsuarioEmpresa(dados);
 	}
 
-	@Get('funcionariosativos')
+	@Get('/ariuserp/funcionariosativos')
 	async listasUsuariosAtivos(@Query() dados: ListaFuncionariosAtivosDTO) {
 		return await this.ariuserpService.listafuncionariosativos(dados);
 	}
 
-	@Get('estabelecimentos')
+	@Get('/ariuserp/estabelecimentos')
 	async listaEstabelecimentos(dados: EstabelecimentoDTO) {
 		return await this.ariuserpService.listaEstabelecimentos(dados);
 	}
 
-	@Get('acoes')
+	@Get('/ariuserp/acoes')
 	async listaacoes(dados: AcaoDTO) {
 		return await this.ariuserpService.listaAcoes(dados);
 	}

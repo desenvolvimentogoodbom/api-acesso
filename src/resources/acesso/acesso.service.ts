@@ -1,18 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CadastraUsarioDTO } from './dto/cadastra-usuario';
 import { OracleService } from 'src/database/oracle/oracle.service';
-import { CadastraUsarioEmpresaDTO } from './dto/cadastra-usuario-empresa';
 import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionarios';
 import { respostaErro } from 'src/utils/response.utils';
 import { FuncionarioDTO } from './dto/functionario';
 import { EstabelecimentoDTO } from './dto/estabelecimento';
 import { AcaoDTO } from './dto/acao';
+import { DesligamentoPendentesDTO } from '../vianuvem/dto/desligamento-pendente';
+import { CadastraUsarioAriusErpDTO } from './dto/cadastra-usuario-ariuserp';
+import { CadastraUsarioEmpresaAriusErpDTO } from './dto/cadastra-usuario-empresa-ariuserp';
 
 @Injectable()
 export class AcessoService {
 	constructor(private readonly oracleDb: OracleService) {}
 
-	async cadastraUsuario(dados: CadastraUsarioDTO[]) {
+	async cadastraUsuario(dados: CadastraUsarioAriusErpDTO[]) {
 		try {
 			for (const usuario of dados) {
 				const query = 'usr_pkg_acesso.prc_criar_usuario_arius_erp';
@@ -40,7 +41,7 @@ export class AcessoService {
 		}
 	}
 
-	async cadastraUsuarioEmpresa(dados: CadastraUsarioEmpresaDTO) {
+	async cadastraUsuarioEmpresa(dados: CadastraUsarioEmpresaAriusErpDTO) {
 		const query = 'usr_pkg_acesso.prc_vincular_usuario_empresa_erp';
 		const params = [dados.id_usuario, dados.empresas];
 
@@ -89,7 +90,7 @@ export class AcessoService {
 			return resultadoDTO;
 		} catch (error) {
 			return respostaErro(
-				'Ocorreu um erro desconhecido ao listar funcionarios',
+				'Ocorreu um erro desconhecido ao executar a consulta',
 				HttpStatus.BAD_REQUEST,
 			);
 		}
@@ -113,7 +114,7 @@ export class AcessoService {
 			return resultadoDTO;
 		} catch (error) {
 			return respostaErro(
-				'Ocorreu um erro desconhecido ao listar estabelecimentos',
+				'Ocorreu um erro desconhecido ao executar a consulta',
 				HttpStatus.BAD_REQUEST,
 			);
 		}
@@ -133,7 +134,32 @@ export class AcessoService {
 			return resultadoDTO;
 		} catch (error) {
 			return respostaErro(
-				'Ocorreu um erro desconhecido ao listar estabelecimentos',
+				'Ocorreu um erro desconhecido ao executar a consulta',
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+	}
+
+	async listaDesligamentosPendentes(dados: DesligamentoPendentesDTO) {
+		const query = `
+		SELECT 
+			PROCESSID,CREATEDATE,NAMEPROCESSTYPE ,
+			'https://app.vianuvem.com.br/auto/home?workflowId='||processid url
+		FROM 
+			USR_T_VN_PROCESS utvp 
+		WHERE UTVP.FINALSITUATION = 'N' 
+		AND utvp.NAMEPROCESSTYPE LIKE 'DESLIGAMENTO - TI%'`;
+		const params = [];
+
+		try {
+			const resultado = await this.oracleDb.executarConsulta(query, params);
+			const resultadoDTO: DesligamentoPendentesDTO[] = resultado.map((registro: any) =>
+				DesligamentoPendentesDTO.fromDatabase(registro),
+			);
+			return resultadoDTO;
+		} catch (error) {
+			return respostaErro(
+				'Ocorreu um erro desconhecido ao executar a consulta',
 				HttpStatus.BAD_REQUEST,
 			);
 		}
