@@ -5,7 +5,6 @@ import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionarios';
 import { TokenGuard } from 'src/guards/token.guard';
 import { EstabelecimentoDTO } from './dto/estabelecimento';
 import { AcaoDTO } from './dto/acao';
-import { DesligamentoPendentesDTO } from '../vianuvem/dto/desligamento-pendente';
 import { CadastraUsarioEmpresaAriusErpDTO } from './dto/cadastra-usuario-empresa-ariuserp';
 
 @UseGuards(TokenGuard)
