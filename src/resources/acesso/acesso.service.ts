@@ -2,13 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CadastraUsarioDTO } from './dto/cadastra-usuario';
 import { OracleService } from 'src/database/oracle/oracle.service';
 import { CadastraUsarioEmpresaDTO } from './dto/cadastra-usuario-empresa';
-import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionaros';
+import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionarios';
 import { respostaErro } from 'src/utils/response.utils';
-import { FuncionarioDTO } from './dto/functionarios';
-import { EstabelecimentoDTO } from './dto/lista-estabelecimento';
+import { FuncionarioDTO } from './dto/functionario';
+import { EstabelecimentoDTO } from './dto/estabelecimento';
+import { AcaoDTO } from './dto/acao';
 
 @Injectable()
-export class AriuserpService {
+export class AcessoService {
 	constructor(private readonly oracleDb: OracleService) {}
 
 	async cadastraUsuario(dados: CadastraUsarioDTO[]) {
@@ -108,6 +109,26 @@ export class AriuserpService {
 			const resultado = await this.oracleDb.executarConsulta(query, params);
 			const resultadoDTO: EstabelecimentoDTO[] = resultado.map((registro: any) =>
 				EstabelecimentoDTO.fromDatabase(registro),
+			);
+			return resultadoDTO;
+		} catch (error) {
+			return respostaErro(
+				'Ocorreu um erro desconhecido ao listar estabelecimentos',
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+	}
+
+	async listaAcoes(dados: AcaoDTO) {
+		const query = `
+		select * from usr_pkg_acesso.fnc_lista_acoes()
+		`;
+		const params = [];
+
+		try {
+			const resultado = await this.oracleDb.executarConsulta(query, params);
+			const resultadoDTO: AcaoDTO[] = resultado.map((registro: any) =>
+				AcaoDTO.fromDatabase(registro),
 			);
 			return resultadoDTO;
 		} catch (error) {

@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AriuserpService } from './ariuserp.service';
-import { AriuserpController } from './ariuserp.controller';
+import { AcessoService } from './acesso.service';
+import { AcessoController } from './acesso.controller';
 import { OracleModule } from 'src/database/oracle/oracle.module';
 import { OracleService } from 'src/database/oracle/oracle.service';
 
 @Module({
-	controllers: [AriuserpController],
-	providers: [AriuserpService],
+	controllers: [AcessoController],
+	providers: [AcessoService],
 	imports: [OracleModule],
 })
-export class AriuserpModule {}
+export class AcessoModule {}
