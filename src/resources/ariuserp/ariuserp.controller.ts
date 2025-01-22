@@ -4,6 +4,7 @@ import { CadastraUsarioDTO } from './dto/cadastra-usuario';
 import { CadastraUsarioEmpresaDTO } from './dto/cadastra-usuario-empresa';
 import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionaros';
 import { TokenGuard } from 'src/guards/token.guard';
+import { EstabelecimentoDTO } from './dto/lista-estabelecimento';
 
 @UseGuards(TokenGuard)
 @Controller('ariuserp')
@@ -23,5 +24,10 @@ export class AriuserpController {
 	@Get('listafuncionariosativos')
 	async listasUsuariosAtivos(@Query() dados: ListaFuncionariosAtivosDTO) {
 		return await this.ariuserpService.listafuncionariosativos(dados);
+	}
+
+	@Get('listaestabelecimentos')
+	async listaEstabelecimentos(dados: EstabelecimentoDTO) {
+		return await this.ariuserpService.listaEstabelecimentos(dados);
 	}
 }

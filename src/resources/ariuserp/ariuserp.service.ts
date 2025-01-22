@@ -5,6 +5,7 @@ import { CadastraUsarioEmpresaDTO } from './dto/cadastra-usuario-empresa';
 import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionaros';
 import { respostaErro } from 'src/utils/response.utils';
 import { FuncionarioDTO } from './dto/functionarios';
+import { EstabelecimentoDTO } from './dto/lista-estabelecimento';
 
 @Injectable()
 export class AriuserpService {
@@ -88,6 +89,30 @@ export class AriuserpService {
 		} catch (error) {
 			return respostaErro(
 				'Ocorreu um erro desconhecido ao listar funcionarios',
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+	}
+
+	async listaEstabelecimentos(dados: EstabelecimentoDTO) {
+		const query = `
+		SELECT 
+			bte.ID_EMPRESA, utrae.CD_ESTABELECIMENTO, bte.NOME_FANTASIA 
+		FROM BAS_T_EMPRESAS bte 
+		INNER JOIN 
+			USR_T_RH_ADP_EMPRESAS utrae ON UTRAE.CD_EMPRESA = bte.ID_EMPRESA 
+		`;
+		const params = [];
+
+		try {
+			const resultado = await this.oracleDb.executarConsulta(query, params);
+			const resultadoDTO: EstabelecimentoDTO[] = resultado.map((registro: any) =>
+				EstabelecimentoDTO.fromDatabase(registro),
+			);
+			return resultadoDTO;
+		} catch (error) {
+			return respostaErro(
+				'Ocorreu um erro desconhecido ao listar estabelecimentos',
 				HttpStatus.BAD_REQUEST,
 			);
 		}
