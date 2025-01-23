@@ -4,6 +4,7 @@ import { OracleModule } from './database/oracle/oracle.module';
 import { ConfigModule } from '@nestjs/config';
 import { VianuvemModule } from './resources/vianuvem/vianuvem.module';
 import { AlertaModule } from './resources/alerta/alerta.module';
+import { AplicativoModule } from './resources/aplicativo/aplicativo.module';
 
 @Module({
 	imports: [
@@ -11,6 +12,7 @@ import { AlertaModule } from './resources/alerta/alerta.module';
 		AcessoModule,
 		VianuvemModule,
 		AlertaModule,
+		AplicativoModule,
 		OracleModule,
 	],
 })

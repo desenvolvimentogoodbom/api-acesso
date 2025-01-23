@@ -6,6 +6,8 @@ export class AutorizacaoPagamentoDTO {
 	data_vencimento: Date;
 	fornecedor: string;
 	url_acesso: string;
+	flagreserved: string;
+	reserveduserid: string;
 
 	static fromDatabase(registro: any): AutorizacaoPagamentoDTO {
 		return {
@@ -16,6 +18,8 @@ export class AutorizacaoPagamentoDTO {
 			data_vencimento: registro[4],
 			fornecedor: registro[5],
 			url_acesso: registro[6],
+			flagreserved: registro[7],
+			reserveduserid: registro[8],
 		};
 	}
 }

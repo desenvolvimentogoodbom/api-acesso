@@ -42,7 +42,9 @@ export class VianuvemService {
        			a.namesituation,
        			nvl(i.indexervalue, i2.indexervalue) data,
        			i3.indexervalue fornecedor,
-				'https://app.vianuvem.com.br/auto/home?workflowId='||a.processid url
+				'https://app.vianuvem.com.br/auto/home?workflowId='||a.processid url,
+				a.flagreserved,
+				a.reserveduserid
   			from usr_t_vn_process a
  			inner join usr_t_vn_process_indexers i
     			on i.processid = a.processid

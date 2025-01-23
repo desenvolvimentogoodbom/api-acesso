@@ -1,13 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OracleService } from 'src/database/oracle/oracle.service';
 import { ListaFuncionariosAtivosDTO } from './dto/lista-funcionarios';
-import { respostaErro } from 'src/utils/response.utils';
+import { respostaErro, respostaSucesso } from 'src/utils/response.utils';
 import { FuncionarioDTO } from './dto/functionario';
 import { EstabelecimentoDTO } from './dto/estabelecimento';
 import { AcaoDTO } from './dto/acao';
 import { DesligamentoPendentesDTO } from '../vianuvem/dto/desligamento-pendente';
 import { CadastraUsarioAriusErpDTO } from './dto/cadastra-usuario-ariuserp';
 import { CadastraUsarioEmpresaAriusErpDTO } from './dto/cadastra-usuario-empresa-ariuserp';
+import { UsuarioERPDTO } from './dto/usuario-erp';
+import axios from 'axios';
 
 @Injectable()
 export class AcessoService {
@@ -162,6 +164,27 @@ export class AcessoService {
 				'Ocorreu um erro desconhecido ao executar a consulta',
 				HttpStatus.BAD_REQUEST,
 			);
+		}
+	}
+
+	async cadastraUsuarioViaArius(dados: UsuarioERPDTO) {
+		const url = 'http://172.16.2.13:8080/AriusERP/v2/Usuario';
+		const username = 'ARIUS';
+		const password = process.env.ARIUS_PASSWORD;
+
+		const auth = Buffer.from(`${username}:${password}`).toString('base64');
+
+		const headers = {
+			Authorization: `Basic ${auth}`,
+			'Content-Type': 'application/json',
+		};
+
+		try {
+			const response = await axios.post(url, dados, { headers });
+			console.log(response.data);
+			return respostaSucesso('Usuario cadastro com sucesso!');
+		} catch (error) {
+			return respostaErro('Erro ao cadastrar usuario', HttpStatus.BAD_REQUEST, error);
 		}
 	}
 }
