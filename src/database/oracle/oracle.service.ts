@@ -5,6 +5,7 @@ import * as oracledb from 'oracledb';
 @Injectable()
 export class OracleService {
 	private connection: oracledb.Connection;
+	oracleDb: any;
 
 	constructor(private oracleConfigService: OracleConfigService) {
 		this.init();

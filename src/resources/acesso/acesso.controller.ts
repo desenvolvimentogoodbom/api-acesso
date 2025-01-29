@@ -7,6 +7,7 @@ import { EstabelecimentoDTO } from './dto/estabelecimento';
 import { AcaoDTO } from './dto/acao';
 import { CadastraUsarioEmpresaAriusErpDTO } from './dto/cadastra-usuario-empresa-ariuserp';
 import { UsuarioERPDTO } from './dto/usuario-erp';
+import { ListaGrupoUsuariosDTO } from './dto/lista-grupo-usuarios';
 
 @UseGuards(TokenGuard)
 @Controller('acesso/ariuserp')
@@ -41,5 +42,10 @@ export class AcessoController {
 	@Post('cadastra-usuario-via-arius')
 	async cadastraUsuarioViaArius(@Body() dados: UsuarioERPDTO) {
 		return await this.ariuserpService.cadastraUsuarioViaArius(dados);
+	}
+
+	@Get('listagrupousuarios')
+	async listaGrupoUsuarios(dados: ListaGrupoUsuariosDTO) {
+		return await this.ariuserpService.listaGrupoUsuarios(dados);
 	}
 }

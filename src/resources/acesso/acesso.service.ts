@@ -10,6 +10,7 @@ import { CadastraUsarioAriusErpDTO } from './dto/cadastra-usuario-ariuserp';
 import { CadastraUsarioEmpresaAriusErpDTO } from './dto/cadastra-usuario-empresa-ariuserp';
 import { UsuarioERPDTO } from './dto/usuario-erp';
 import axios from 'axios';
+import { ListaGrupoUsuariosDTO } from './dto/lista-grupo-usuarios';
 
 @Injectable()
 export class AcessoService {
@@ -74,6 +75,7 @@ export class AcessoService {
 		where (cd_estabelecimento = :estabelecimento or :estabelecimento is null) 
 		and (nome_func like :nome or :nome is null)
 		and (cpf like :cpf or :cpf is null)
+		and utfc.DT_DESLIGAMENTO <> '01/01/1901'
 		`;
 		const params = [
 			dados.estabelecimento ?? undefined,
@@ -185,6 +187,28 @@ export class AcessoService {
 			return respostaSucesso('Usuario cadastro com sucesso!');
 		} catch (error) {
 			return respostaErro('Erro ao cadastrar usuario', HttpStatus.BAD_REQUEST, error);
+		}
+	}
+
+	async listaGrupoUsuarios(dados: ListaGrupoUsuariosDTO) {
+		const query = `
+			select id_usuario, nome 
+			from bas_t_usuarios 
+			where ativo = 'T' 
+			and representa_grupo = 'T'`;
+		const params = [];
+
+		try {
+			const resultado = await this.oracleDb.executarConsulta(query, params);
+			const resultadoDTO: ListaGrupoUsuariosDTO[] = resultado.map((registro: any) =>
+				ListaGrupoUsuariosDTO.fromDatabase(registro),
+			);
+			return resultadoDTO;
+		} catch (error) {
+			return respostaErro(
+				'Ocorreu um erro desconhecido ao executar a consulta',
+				HttpStatus.BAD_REQUEST,
+			);
 		}
 	}
 }
