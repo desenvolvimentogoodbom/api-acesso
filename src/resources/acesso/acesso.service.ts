@@ -75,7 +75,8 @@ export class AcessoService {
 		where (cd_estabelecimento = :estabelecimento or :estabelecimento is null) 
 		and (nome_func like :nome or :nome is null)
 		and (cpf like :cpf or :cpf is null)
-		and utfc.DT_DESLIGAMENTO <> '01/01/1901'
+		and DT_DESLIGAMENTO = '01/01/1901'
+		order by nome_func
 		`;
 		const params = [
 			dados.estabelecimento ?? undefined,
